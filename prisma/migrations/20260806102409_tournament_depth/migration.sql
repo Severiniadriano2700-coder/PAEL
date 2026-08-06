@@ -1,0 +1,27 @@
+-- DropForeignKey
+ALTER TABLE "Award" DROP CONSTRAINT "Award_seasonId_fkey";
+
+-- AlterTable
+ALTER TABLE "Award" ADD COLUMN     "tournamentId" TEXT,
+ALTER COLUMN "seasonId" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "Game" ADD COLUMN     "round" TEXT;
+
+-- AlterTable
+ALTER TABLE "PlayerGameStats" ADD COLUMN     "ftAttempted" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "ftMade" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "minutesPlayed" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "steals" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "turnovers" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "PlayerSeasonStats" ADD COLUMN     "ftPct" DOUBLE PRECISION,
+ADD COLUMN     "mpg" DOUBLE PRECISION NOT NULL DEFAULT 0,
+ADD COLUMN     "tpg" DOUBLE PRECISION NOT NULL DEFAULT 0;
+
+-- AddForeignKey
+ALTER TABLE "Award" ADD CONSTRAINT "Award_seasonId_fkey" FOREIGN KEY ("seasonId") REFERENCES "Season"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Award" ADD CONSTRAINT "Award_tournamentId_fkey" FOREIGN KEY ("tournamentId") REFERENCES "Tournament"("id") ON DELETE SET NULL ON UPDATE CASCADE;

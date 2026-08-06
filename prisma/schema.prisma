@@ -1,0 +1,393 @@
+// ============================================
+// PROAM ELITE LEAGUE — SCHEMA DE BASE DE DATOS
+// ============================================
+// Diseñado para preservar el historial completo de la liga:
+// cada jugador y equipo conserva su trayectoria a través
+// de todas las temporadas jugadas, sin perder datos nunca.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ---------- ENTIDADES PERMANENTES ----------
+
+model Player {
+  id            String   @id @default(cuid())
+  gamertag      String   @unique
+  fullName      String?
+  bio           String?
+  avatarUrl     String?
+  position      String?  // PG, SG, SF, PF, C
+  joinedAt      DateTime @default(now())
+  twitter       String?
+  twitch        String?
+  youtube       String?
+  isActive      Boolean  @default(true)
+
+  seasonStats     PlayerSeasonStats[]
+  awards          Award[]
+  draftPicks      DraftPick[]
+  disciplinary    DisciplinaryAction[]
+  votesCast       MvpVote[] @relation("VoteCast")
+  votesReceived   MvpVote[] @relation("VoteReceived")
+  gameStats       PlayerGameStats[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Team {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  shortName     String?  // ej. WOL, DRG
+  logoUrl       String?
+  foundedAt     DateTime @default(now())
+  primaryColor  String?
+  secondaryColor String?
+  isActive      Boolean  @default(true)
+
+  seasonRecords   TeamSeasonRecord[]
+  playerSeasonStats PlayerSeasonStats[]
+  homeGames       Game[] @relation("HomeTeam")
+  awayGames       Game[] @relation("AwayTeam")
+  seriesAsTeamA   PlayoffSeries[] @relation("SeriesTeamA")
+  seriesAsTeamB   PlayoffSeries[] @relation("SeriesTeamB")
+  awards          Award[]
+  draftPicks      DraftPick[]
+  playerGameStats PlayerGameStats[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ---------- TEMPORADAS ----------
+
+model Season {
+  id            String   @id @default(cuid())
+  name          String   @unique // ej. "Temporada 7"
+  startDate     DateTime
+  endDate       DateTime?
+  isActive      Boolean  @default(false)
+
+  playerStats     PlayerSeasonStats[]
+  teamRecords     TeamSeasonRecord[]
+  games           Game[]
+  tournaments     Tournament[]
+  awards          Award[]
+  drafts          Draft[]
+  playoffSeries   PlayoffSeries[]
+  registrations   TeamRegistration[]
+  mvpVotes        MvpVote[]
+  createdAt       DateTime @default(now())
+}
+
+model PlayerSeasonStats {
+  id          String   @id @default(cuid())
+  playerId    String
+  player      Player   @relation(fields: [playerId], references: [id])
+  seasonId    String
+  season      Season   @relation(fields: [seasonId], references: [id])
+  teamId      String?
+  team        Team?    @relation(fields: [teamId], references: [id])
+
+  gamesPlayed Int      @default(0)
+  ppg         Float    @default(0)
+  rpg         Float    @default(0)
+  apg         Float    @default(0)
+  spg         Float    @default(0)
+  bpg         Float    @default(0)
+  tpg         Float    @default(0) // pérdidas de balón por partido
+  mpg         Float    @default(0) // minutos por partido
+  fgPct       Float?
+  threePct    Float?
+  ftPct       Float?
+
+  @@unique([playerId, seasonId])
+}
+
+model TeamSeasonRecord {
+  id          String   @id @default(cuid())
+  teamId      String
+  team        Team     @relation(fields: [teamId], references: [id])
+  seasonId    String
+  season      Season   @relation(fields: [seasonId], references: [id])
+
+  wins        Int      @default(0)
+  losses      Int      @default(0)
+  pointsDiff  Int      @default(0)
+  streak      String?  // ej. "6W", "2L"
+  standing    Int?     // posición en la clasificación
+
+  @@unique([teamId, seasonId])
+}
+
+// ---------- PARTIDOS ----------
+
+model Game {
+  id          String   @id @default(cuid())
+  seasonId    String?
+  season      Season?  @relation(fields: [seasonId], references: [id])
+  tournamentId String?
+  tournament  Tournament? @relation(fields: [tournamentId], references: [id])
+  seriesId    String?
+  series      PlayoffSeries? @relation(fields: [seriesId], references: [id])
+  homeTeamId  String
+  homeTeam    Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamId  String
+  awayTeam    Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
+
+  scheduledAt DateTime
+  homeScore   Int?
+  awayScore   Int?
+  status      GameStatus @default(SCHEDULED)
+  phase       GamePhase  @default(REGULAR)
+  round       String?    // ronda dentro de un torneo, ej. "Cuartos de final", "Semifinal", "Final"
+  vodUrl      String?
+
+  playerStats PlayerGameStats[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Una serie al mejor de 3 (o al mejor de X) entre dos equipos en playoffs.
+// Agrupa varios "Game" bajo un mismo enfrentamiento.
+model PlayoffSeries {
+  id          String   @id @default(cuid())
+  seasonId    String
+  season      Season   @relation(fields: [seasonId], references: [id])
+  round       String   // ej. "Cuartos de final", "Semifinal", "Final"
+  teamAId     String
+  teamA       Team     @relation("SeriesTeamA", fields: [teamAId], references: [id])
+  teamBId     String
+  teamB       Team     @relation("SeriesTeamB", fields: [teamBId], references: [id])
+  gamesToWin  Int      @default(2) // al mejor de 3 = primero en llegar a 2
+  teamAWins   Int      @default(0)
+  teamBWins   Int      @default(0)
+  status      SeriesStatus @default(ONGOING)
+  games       Game[]
+
+  createdAt   DateTime @default(now())
+}
+
+enum SeriesStatus {
+  ONGOING
+  FINISHED
+}
+
+enum GameStatus {
+  SCHEDULED
+  LIVE
+  FINISHED
+  POSTPONED
+  CANCELLED
+}
+
+enum GamePhase {
+  REGULAR
+  PLAYOFFS
+  FINAL
+}
+
+// ---------- TORNEOS ----------
+
+model Tournament {
+  id          String   @id @default(cuid())
+  seasonId    String?
+  season      Season?  @relation(fields: [seasonId], references: [id])
+  name        String
+  format      String   // ej. "Eliminación directa", "Grupos + eliminatorias"
+  prizePool   String?
+  startDate   DateTime
+  endDate     DateTime?
+  status      TournamentStatus @default(UPCOMING)
+  bannerUrl   String?
+  entryFeePerPlayer Float?  // ej. 5.00
+
+  games       Game[]
+  registrations TeamRegistration[]
+  mvpVotes    MvpVote[]
+  awards      Award[]
+  createdAt   DateTime @default(now())
+}
+
+enum TournamentStatus {
+  UPCOMING
+  ONGOING
+  FINISHED
+}
+
+// ---------- INSCRIPCIÓN Y PAGO ----------
+// El capitán registra el equipo completo de una vez (nombre del equipo +
+// nombre de cada jugador) y paga la inscripción total. Un admin confirma
+// el pago desde el panel y, al confirmarlo, se crean el Team y los Player
+// reales dentro de la liga.
+
+model TeamRegistration {
+  id              String   @id @default(cuid())
+  competitionType CompetitionType
+  seasonId        String?
+  season          Season?  @relation(fields: [seasonId], references: [id])
+  tournamentId    String?
+  tournament      Tournament? @relation(fields: [tournamentId], references: [id])
+
+  teamName        String
+  captainName     String
+  captainContact  String   // email o usuario de Discord
+  playerNames     String   // lista de nombres/gamertags separados por coma (5-6 jugadores)
+
+  amountDue       Float
+  paymentMethod   PaymentMethod @default(PAYPAL)
+  paymentStatus   PaymentStatus @default(PENDING)
+  paypalOrderId   String?
+
+  approvedTeamId  String?  // se rellena cuando el admin confirma y crea el Team real
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum CompetitionType {
+  LEAGUE
+  TOURNAMENT
+}
+
+enum PaymentMethod {
+  PAYPAL
+  MANUAL
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+// ---------- VOTACIÓN DE MVP ----------
+// Cada jugador inscrito puede votar una vez por temporada o torneo.
+// El MVP se calcula contando los votos y se registra luego como Award.
+
+model MvpVote {
+  id            String   @id @default(cuid())
+  seasonId      String?
+  season        Season?  @relation(fields: [seasonId], references: [id])
+  tournamentId  String?
+  tournament    Tournament? @relation(fields: [tournamentId], references: [id])
+  voterId       String   // jugador que emite el voto
+  voter         Player   @relation("VoteCast", fields: [voterId], references: [id])
+  votedForId    String   // jugador votado
+  votedFor      Player   @relation("VoteReceived", fields: [votedForId], references: [id])
+  createdAt     DateTime @default(now())
+
+  @@unique([seasonId, tournamentId, voterId]) // un voto por persona y competición
+}
+
+// ---------- DRAFT ----------
+
+model Draft {
+  id          String   @id @default(cuid())
+  seasonId    String
+  season      Season   @relation(fields: [seasonId], references: [id])
+  name        String
+  draftDate   DateTime
+  picks       DraftPick[]
+}
+
+model DraftPick {
+  id          String   @id @default(cuid())
+  draftId     String
+  draft       Draft    @relation(fields: [draftId], references: [id])
+  pickNumber  Int
+  teamId      String
+  team        Team     @relation(fields: [teamId], references: [id])
+  playerId    String
+  player      Player   @relation(fields: [playerId], references: [id])
+}
+
+// ---------- PREMIOS ----------
+
+// Un premio pertenece a una temporada de liga O a un torneo, nunca a
+// ambos (se valida a nivel de aplicación, no de base de datos).
+model Award {
+  id            String   @id @default(cuid())
+  seasonId      String?
+  season        Season?  @relation(fields: [seasonId], references: [id])
+  tournamentId  String?
+  tournament    Tournament? @relation(fields: [tournamentId], references: [id])
+  type          String   // ej. "MVP", "Campeón", "Mejor Defensor", "Rookie del Año"
+  playerId      String?
+  player        Player?  @relation(fields: [playerId], references: [id])
+  teamId        String?
+  team          Team?    @relation(fields: [teamId], references: [id])
+
+  createdAt     DateTime @default(now())
+}
+
+// ---------- DISCIPLINA ----------
+
+model DisciplinaryAction {
+  id          String   @id @default(cuid())
+  playerId    String
+  player      Player   @relation(fields: [playerId], references: [id])
+  reason      String
+  type        String   // ej. "Suspensión", "Multa", "Advertencia"
+  duration    String?  // ej. "2 partidos"
+  issuedAt    DateTime @default(now())
+}
+
+// ---------- NOTICIAS (gestionadas desde el panel admin) ----------
+
+model News {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  imageUrl    String?
+  publishedAt DateTime @default(now())
+  authorName  String?
+}
+
+// Estadística individual de un jugador en un partido concreto (box score).
+// Esto es lo que luego se promedia para calcular PlayerSeasonStats.
+model PlayerGameStats {
+  id            String   @id @default(cuid())
+  gameId        String
+  game          Game     @relation(fields: [gameId], references: [id])
+  playerId      String
+  player        Player   @relation(fields: [playerId], references: [id])
+  teamId        String
+  team          Team     @relation(fields: [teamId], references: [id])
+
+  points        Int      @default(0)
+  assists       Int      @default(0)
+  rebounds      Int      @default(0)
+  steals        Int      @default(0)
+  blocks        Int      @default(0)
+  turnovers     Int      @default(0)
+  minutesPlayed Int      @default(0)
+  fgMade        Int      @default(0) // tiros de campo anotados
+  fgAttempted   Int      @default(0) // tiros de campo intentados
+  threeMade     Int      @default(0) // triples anotados
+  threeAttempted Int     @default(0) // triples intentados
+  ftMade        Int      @default(0) // tiros libres anotados
+  ftAttempted   Int      @default(0) // tiros libres intentados
+
+  createdAt     DateTime @default(now())
+
+  @@unique([gameId, playerId])
+}
+
+// ---------- ADMINISTRADORES ----------
+
+model Admin {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  passwordHash String
+  name        String?
+  role        String   @default("admin") // admin, editor, super_admin
+  createdAt   DateTime @default(now())
+}
