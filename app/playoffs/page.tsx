@@ -60,13 +60,13 @@ export default async function PlayoffsPage() {
                       <div key={s.id} className="bg-surface border border-border rounded-xl p-4">
                         <div className="flex items-center justify-between py-1.5">
                           <span className="flex items-center gap-2 text-sm font-semibold">
-                            <TeamBadge letter={s.teamA.name[0]} color={s.teamA.primaryColor ?? "#C9A227"} /> {s.teamA.name}
+                            <TeamBadge logoUrl={s.teamA.logoUrl} letter={s.teamA.name[0]} color={s.teamA.primaryColor ?? "#C9A227"} /> {s.teamA.name}
                           </span>
                           <span className="font-mono font-bold text-gold">{s.teamAWins}</span>
                         </div>
                         <div className="flex items-center justify-between py-1.5 border-t border-border">
                           <span className="flex items-center gap-2 text-sm font-semibold">
-                            <TeamBadge letter={s.teamB.name[0]} color={s.teamB.primaryColor ?? "#8B8B93"} /> {s.teamB.name}
+                            <TeamBadge logoUrl={s.teamB.logoUrl} letter={s.teamB.name[0]} color={s.teamB.primaryColor ?? "#8B8B93"} /> {s.teamB.name}
                           </span>
                           <span className="font-mono font-bold text-gold">{s.teamBWins}</span>
                         </div>

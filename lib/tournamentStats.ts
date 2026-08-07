@@ -59,6 +59,7 @@ export type TournamentTeamStat = {
   teamId: string;
   teamName: string;
   primaryColor: string | null;
+  logoUrl: string | null;
   wins: number;
   losses: number;
   pointsFor: number;
@@ -75,14 +76,14 @@ export async function getTournamentTeamStats(tournamentId: string): Promise<Tour
   });
 
   const byTeam = new Map<string, TournamentTeamStat>();
-  const ensure = (id: string, name: string, color: string | null) => {
-    if (!byTeam.has(id)) byTeam.set(id, { teamId: id, teamName: name, primaryColor: color, wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 });
+  const ensure = (id: string, name: string, color: string | null, logoUrl: string | null) => {
+    if (!byTeam.has(id)) byTeam.set(id, { teamId: id, teamName: name, primaryColor: color, logoUrl, wins: 0, losses: 0, pointsFor: 0, pointsAgainst: 0 });
     return byTeam.get(id)!;
   };
 
   for (const g of games) {
-    const home = ensure(g.homeTeamId, g.homeTeam.name, g.homeTeam.primaryColor);
-    const away = ensure(g.awayTeamId, g.awayTeam.name, g.awayTeam.primaryColor);
+    const home = ensure(g.homeTeamId, g.homeTeam.name, g.homeTeam.primaryColor, g.homeTeam.logoUrl);
+    const away = ensure(g.awayTeamId, g.awayTeam.name, g.awayTeam.primaryColor, g.awayTeam.logoUrl);
     const hs = g.homeScore ?? 0;
     const as = g.awayScore ?? 0;
     home.pointsFor += hs; home.pointsAgainst += as;

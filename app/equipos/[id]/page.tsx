@@ -136,9 +136,9 @@ export default async function TeamDetailPage({ params }: { params: { id: string 
                   {upcomingGames.map((g) => (
                     <div key={g.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                       <div className="flex items-center gap-1.5 text-xs font-semibold">
-                        <TeamBadge letter={g.homeTeam.name[0]} color={g.homeTeam.primaryColor ?? "#C9A227"} />
+                        <TeamBadge logoUrl={g.homeTeam.logoUrl} letter={g.homeTeam.name[0]} color={g.homeTeam.primaryColor ?? "#C9A227"} />
                         <span className="text-muted font-normal">vs</span>
-                        <TeamBadge letter={g.awayTeam.name[0]} color={g.awayTeam.primaryColor ?? "#8B8B93"} />
+                        <TeamBadge logoUrl={g.awayTeam.logoUrl} letter={g.awayTeam.name[0]} color={g.awayTeam.primaryColor ?? "#8B8B93"} />
                       </div>
                       <div className="text-right leading-tight">
                         <div className="text-[10px] font-mono text-muted">

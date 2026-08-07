@@ -70,10 +70,10 @@ export default async function GamesPage({
                     {filtered.map((g) => (
                       <div key={g.id} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                         <div className="flex items-center gap-2 text-sm font-semibold w-64 shrink-0">
-                          <TeamBadge letter={g.homeTeam.name[0]} color={g.homeTeam.primaryColor ?? "#C9A227"} />
+                          <TeamBadge logoUrl={g.homeTeam.logoUrl} letter={g.homeTeam.name[0]} color={g.homeTeam.primaryColor ?? "#C9A227"} />
                           {g.homeTeam.name}
                           <span className="text-muted font-normal text-xs">vs</span>
-                          <TeamBadge letter={g.awayTeam.name[0]} color={g.awayTeam.primaryColor ?? "#8B8B93"} />
+                          <TeamBadge logoUrl={g.awayTeam.logoUrl} letter={g.awayTeam.name[0]} color={g.awayTeam.primaryColor ?? "#8B8B93"} />
                           {g.awayTeam.name}
                         </div>
                         <div className="text-[10px] uppercase tracking-wide text-muted w-32">

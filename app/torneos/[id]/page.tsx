@@ -119,7 +119,7 @@ export default async function TournamentDetailPage({
                   <div>
                     <div className="text-[10px] uppercase tracking-widest font-bold text-gold">Campeón</div>
                     <a href={`/equipos/${champion.id}`} className="flex items-center gap-2 mt-1 hover:text-gold transition-colors">
-                      <TeamBadge letter={champion.name[0]} color={champion.primaryColor ?? "#C9A227"} />
+                      <TeamBadge logoUrl={champion.logoUrl} letter={champion.name[0]} color={champion.primaryColor ?? "#C9A227"} />
                       <span className="font-display uppercase text-lg leading-none">{champion.name}</span>
                     </a>
                   </div>
@@ -156,7 +156,7 @@ export default async function TournamentDetailPage({
                     href={`/equipos/${t.id}`}
                     className="flex items-center gap-2 bg-[#0D0D0F] border border-border rounded-lg px-3 py-2 hover:border-gold transition-colors"
                   >
-                    <TeamBadge letter={t.name[0]} color={t.primaryColor ?? "#C9A227"} />
+                    <TeamBadge logoUrl={t.logoUrl} letter={t.name[0]} color={t.primaryColor ?? "#C9A227"} />
                     <span className="text-xs font-semibold truncate">{t.name}</span>
                   </a>
                 ))}
@@ -189,7 +189,7 @@ export default async function TournamentDetailPage({
                       <tr key={t.teamId} className="border-t border-border">
                         <td className="py-2 font-sans font-semibold">
                           <a href={`/equipos/${t.teamId}`} className="flex items-center gap-1.5 hover:text-gold transition-colors">
-                            <TeamBadge letter={t.teamName[0]} color={t.primaryColor ?? "#C9A227"} /> {t.teamName}
+                            <TeamBadge logoUrl={t.logoUrl} letter={t.teamName[0]} color={t.primaryColor ?? "#C9A227"} /> {t.teamName}
                           </a>
                         </td>
                         <td className="py-2 text-right">{t.wins}</td>
@@ -302,8 +302,8 @@ function GameCard({
 }: {
   game: {
     id: string;
-    homeTeam: { name: string; primaryColor: string | null };
-    awayTeam: { name: string; primaryColor: string | null };
+    homeTeam: { name: string; primaryColor: string | null; logoUrl: string | null };
+    awayTeam: { name: string; primaryColor: string | null; logoUrl: string | null };
     scheduledAt: Date;
     status: string;
     homeScore: number | null;
@@ -314,14 +314,14 @@ function GameCard({
     <div className="bg-[#0D0D0F] border border-border rounded-lg p-3">
       <div className="flex items-center justify-between text-xs">
         <span className="flex items-center gap-1.5 font-semibold">
-          <TeamBadge letter={game.homeTeam.name[0]} color={game.homeTeam.primaryColor ?? "#C9A227"} />
+          <TeamBadge logoUrl={game.homeTeam.logoUrl} letter={game.homeTeam.name[0]} color={game.homeTeam.primaryColor ?? "#C9A227"} />
           {game.homeTeam.name}
         </span>
         <span className="font-mono">{game.status === "FINISHED" ? game.homeScore : "–"}</span>
       </div>
       <div className="flex items-center justify-between text-xs mt-1.5">
         <span className="flex items-center gap-1.5 font-semibold">
-          <TeamBadge letter={game.awayTeam.name[0]} color={game.awayTeam.primaryColor ?? "#8B8B93"} />
+          <TeamBadge logoUrl={game.awayTeam.logoUrl} letter={game.awayTeam.name[0]} color={game.awayTeam.primaryColor ?? "#8B8B93"} />
           {game.awayTeam.name}
         </span>
         <span className="font-mono">{game.status === "FINISHED" ? game.awayScore : "–"}</span>

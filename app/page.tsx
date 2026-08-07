@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
 import TeamBadge from "@/components/TeamBadge";
-import { Play, Image as ImageIcon } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 
 // Esta página se vuelve a generar en cada visita para que los datos
 // siempre estén al día (nada de caché estática mientras la liga está activa).
@@ -28,6 +28,13 @@ async function getHomeData() {
     prisma.news.findMany({ orderBy: { publishedAt: "desc" }, take: 3 }),
   ]);
 
+  const recentResults = await prisma.game.findMany({
+    where: { seasonId: season.id, status: "FINISHED" },
+    orderBy: { scheduledAt: "desc" },
+    take: 4,
+    include: { homeTeam: true, awayTeam: true },
+  });
+
   // Jugador destacado: el líder de puntos por partido de la temporada activa
   const featuredStats = await prisma.playerSeasonStats.findFirst({
     where: { seasonId: season.id },
@@ -43,7 +50,7 @@ async function getHomeData() {
     prisma.playerSeasonStats.findFirst({ where: { seasonId: season.id }, orderBy: { spg: "desc" }, include: { player: true, team: true } }),
   ]);
 
-  return { season, upcomingGames, standings, news, featuredStats, leaders: { topScorer, topAssists, topRebounds, topSteals } };
+  return { season, upcomingGames, recentResults, standings, news, featuredStats, leaders: { topScorer, topAssists, topRebounds, topSteals } };
 }
 
 // El banner de torneo se muestra siempre, incluso sin temporada de liga
@@ -82,9 +89,12 @@ export default async function Home() {
               <p className="mt-3 text-muted uppercase text-xs tracking-[0.25em] font-medium">
                 Where competition meets legacy
               </p>
-              <button className="mt-6 bg-gold text-black font-bold text-xs uppercase tracking-wide px-5 py-3 rounded-md hover:bg-[#dbb432] transition-colors">
-                Ver partidos en vivo
-              </button>
+              <a
+                href="/partidos"
+                className="inline-block mt-6 bg-gold text-black font-bold text-xs uppercase tracking-wide px-5 py-3 rounded-md hover:bg-[#dbb432] transition-colors"
+              >
+                Ver calendario de partidos
+              </a>
             </div>
             <div className="absolute right-0 top-0 bottom-0 w-[50%] hidden md:flex items-center justify-center gap-2 bg-gradient-to-l from-[#0D0D0F] to-transparent">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -123,10 +133,10 @@ export default async function Home() {
                       {data.upcomingGames.map((g) => (
                         <div key={g.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                           <div className="flex items-center gap-2 text-sm font-semibold">
-                            <TeamBadge letter={g.homeTeam.name[0]} />
+                            <TeamBadge logoUrl={g.homeTeam.logoUrl} letter={g.homeTeam.name[0]} />
                             {g.homeTeam.name}
                             <span className="text-muted font-normal text-xs">x</span>
-                            <TeamBadge letter={g.awayTeam.name[0]} color="#8B8B93" />
+                            <TeamBadge logoUrl={g.awayTeam.logoUrl} letter={g.awayTeam.name[0]} color="#8B8B93" />
                             {g.awayTeam.name}
                           </div>
                           <div className="flex items-center gap-3">
@@ -172,7 +182,7 @@ export default async function Home() {
                             <td className="py-2 text-muted">{s.standing}</td>
                             <td className="py-2 font-sans font-semibold">
                               <span className="flex items-center gap-1.5">
-                                <TeamBadge letter={s.team.name[0]} /> {s.team.name}
+                                <TeamBadge logoUrl={s.team.logoUrl} letter={s.team.name[0]} /> {s.team.name}
                               </span>
                             </td>
                             <td className="py-2 text-right">{s.wins}</td>
@@ -233,15 +243,33 @@ export default async function Home() {
               {/* Row 2 */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div className="bg-surface border border-border rounded-xl p-4">
-                  <h2 className="text-[11px] uppercase tracking-wider font-bold text-muted mb-3">Mejores jugadas</h2>
-                  <div className="aspect-video bg-[#0D0D0F] rounded-lg flex items-center justify-center border border-border">
-                    <div className="w-10 h-10 rounded-full bg-black/60 border border-gold flex items-center justify-center">
-                      <Play size={16} className="text-gold ml-0.5" fill="#C9A227" />
-                    </div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-[11px] uppercase tracking-wider font-bold text-muted">Últimos resultados</h2>
+                    <a href="/partidos" className="text-[11px] text-gold">Ver todos</a>
                   </div>
-                  <a href="/noticias" className="block text-center w-full mt-3 border border-[#2A2A2E] text-muted text-[10px] uppercase tracking-wide font-bold py-2 rounded-md">
-                    Ver todas
-                  </a>
+                  {data.recentResults.length === 0 ? (
+                    <p className="text-xs text-muted py-4">Todavía no se ha jugado ningún partido.</p>
+                  ) : (
+                    <div className="space-y-1">
+                      {data.recentResults.map((g) => {
+                        const homeWon = (g.homeScore ?? 0) > (g.awayScore ?? 0);
+                        return (
+                          <div key={g.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                            <div className="flex items-center gap-1.5 text-xs min-w-0">
+                              <TeamBadge logoUrl={g.homeTeam.logoUrl} letter={g.homeTeam.name[0]} color={g.homeTeam.primaryColor ?? "#C9A227"} />
+                              <span className={`truncate ${homeWon ? "font-bold" : "text-muted"}`}>{g.homeTeam.name}</span>
+                              <span className="text-muted">·</span>
+                              <TeamBadge logoUrl={g.awayTeam.logoUrl} letter={g.awayTeam.name[0]} color={g.awayTeam.primaryColor ?? "#8B8B93"} />
+                              <span className={`truncate ${!homeWon ? "font-bold" : "text-muted"}`}>{g.awayTeam.name}</span>
+                            </div>
+                            <span className="font-mono font-bold text-xs shrink-0 ml-2">
+                              {g.homeScore} - {g.awayScore}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
 
                 <div className="bg-surface border border-border rounded-xl p-4">

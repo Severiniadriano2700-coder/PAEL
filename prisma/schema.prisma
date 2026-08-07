@@ -116,11 +116,13 @@ model TeamSeasonRecord {
   seasonId    String
   season      Season   @relation(fields: [seasonId], references: [id])
 
-  wins        Int      @default(0)
-  losses      Int      @default(0)
-  pointsDiff  Int      @default(0)
-  streak      String?  // ej. "6W", "2L"
-  standing    Int?     // posición en la clasificación
+  wins          Int    @default(0)
+  losses        Int    @default(0)
+  pointsFor     Int    @default(0) // puntos anotados en total
+  pointsAgainst Int    @default(0) // puntos recibidos en total
+  pointsDiff    Int    @default(0)
+  streak        String? // ej. "6W", "2L"
+  standing      Int?    // posición en la clasificación
 
   @@unique([teamId, seasonId])
 }

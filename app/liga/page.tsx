@@ -108,7 +108,7 @@ export default async function LeaguePage() {
                           <td className="py-2 text-muted">{s.standing}</td>
                           <td className="py-2 font-sans font-semibold">
                             <a href={`/equipos/${s.team.id}`} className="flex items-center gap-1.5 hover:text-gold transition-colors">
-                              <TeamBadge letter={s.team.name[0]} color={s.team.primaryColor ?? "#C9A227"} /> {s.team.name}
+                              <TeamBadge logoUrl={s.team.logoUrl} letter={s.team.name[0]} color={s.team.primaryColor ?? "#C9A227"} /> {s.team.name}
                             </a>
                           </td>
                           <td className="py-2 text-right">{s.wins}</td>
@@ -152,10 +152,10 @@ export default async function LeaguePage() {
                       {data.upcomingGames.map((g) => (
                         <div key={g.id} className="flex items-center justify-between py-2 border-b border-border last:border-0 text-xs">
                           <div className="flex items-center gap-1.5 font-semibold">
-                            <TeamBadge letter={g.homeTeam.name[0]} color={g.homeTeam.primaryColor ?? "#C9A227"} />
+                            <TeamBadge logoUrl={g.homeTeam.logoUrl} letter={g.homeTeam.name[0]} color={g.homeTeam.primaryColor ?? "#C9A227"} />
                             {g.homeTeam.name}
                             <span className="text-muted font-normal">vs</span>
-                            <TeamBadge letter={g.awayTeam.name[0]} color={g.awayTeam.primaryColor ?? "#8B8B93"} />
+                            <TeamBadge logoUrl={g.awayTeam.logoUrl} letter={g.awayTeam.name[0]} color={g.awayTeam.primaryColor ?? "#8B8B93"} />
                             {g.awayTeam.name}
                           </div>
                           <div className="text-muted font-mono text-[10px]">

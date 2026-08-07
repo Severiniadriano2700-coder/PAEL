@@ -45,16 +45,19 @@ export async function recalculateTeamSeasonRecord(teamId: string, seasonId: stri
 
   let wins = 0;
   let losses = 0;
-  let pointsDiff = 0;
+  let pointsFor = 0;
+  let pointsAgainst = 0;
 
   for (const g of games) {
     const isHome = g.homeTeamId === teamId;
     const own = isHome ? g.homeScore ?? 0 : g.awayScore ?? 0;
     const opp = isHome ? g.awayScore ?? 0 : g.homeScore ?? 0;
-    pointsDiff += own - opp;
+    pointsFor += own;
+    pointsAgainst += opp;
     if (own > opp) wins++;
     else if (own < opp) losses++;
   }
+  const pointsDiff = pointsFor - pointsAgainst;
 
   // Racha: recorre los partidos más recientes primero y cuenta victorias o
   // derrotas consecutivas hasta que se rompe la racha.
@@ -78,8 +81,8 @@ export async function recalculateTeamSeasonRecord(teamId: string, seasonId: stri
 
   await prisma.teamSeasonRecord.upsert({
     where: { teamId_seasonId: { teamId, seasonId } },
-    update: { wins, losses, pointsDiff, streak },
-    create: { teamId, seasonId, wins, losses, pointsDiff, streak },
+    update: { wins, losses, pointsFor, pointsAgainst, pointsDiff, streak },
+    create: { teamId, seasonId, wins, losses, pointsFor, pointsAgainst, pointsDiff, streak },
   });
 
   await recalculateStandings(seasonId);

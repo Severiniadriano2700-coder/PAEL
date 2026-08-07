@@ -56,7 +56,7 @@ export default async function HallOfFamePage() {
                           </div>
                           {a.team && (
                             <div className="flex items-center gap-2 text-sm font-semibold">
-                              <TeamBadge letter={a.team.name[0]} color={a.team.primaryColor ?? "#C9A227"} /> {a.team.name}
+                              <TeamBadge logoUrl={a.team.logoUrl} letter={a.team.name[0]} color={a.team.primaryColor ?? "#C9A227"} /> {a.team.name}
                             </div>
                           )}
                           {a.player && (

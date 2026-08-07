@@ -53,7 +53,7 @@ export default async function EquiposPage() {
                   href={`/equipos/${t.id}`}
                   className="bg-surface border border-border rounded-xl p-4 flex items-center gap-3 hover:border-gold transition-colors"
                 >
-                  <TeamBadge letter={t.name[0]} color={t.primaryColor ?? "#C9A227"} />
+                  <TeamBadge logoUrl={t.logoUrl} letter={t.name[0]} color={t.primaryColor ?? "#C9A227"} />
                   <div>
                     <div className="font-bold text-sm">{t.name}</div>
                     <div className="text-xs text-muted">
