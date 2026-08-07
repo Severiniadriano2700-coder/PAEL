@@ -46,8 +46,24 @@ async function getHomeData() {
   return { season, upcomingGames, standings, news, featuredStats, leaders: { topScorer, topAssists, topRebounds, topSteals } };
 }
 
+// El banner de torneo se muestra siempre, incluso sin temporada de liga
+// activa, así que se consulta aparte: primero un torneo en curso y, si no
+// hay, el siguiente próximo por fecha.
+async function getFeaturedTournament() {
+  const ongoing = await prisma.tournament.findFirst({
+    where: { status: "ONGOING" },
+    orderBy: { startDate: "asc" },
+  });
+  if (ongoing) return ongoing;
+
+  return prisma.tournament.findFirst({
+    where: { status: "UPCOMING" },
+    orderBy: { startDate: "asc" },
+  });
+}
+
 export default async function Home() {
-  const data = await getHomeData();
+  const [data, featuredTournament] = await Promise.all([getHomeData(), getFeaturedTournament()]);
 
   return (
     <div className="min-h-screen flex">
@@ -298,13 +314,42 @@ export default async function Home() {
             </div>
 
             <div className="bg-gradient-to-br from-[#1A1030] to-[#0A0A0B] border border-[#2A1F45] rounded-xl p-5">
-              <div className="font-black uppercase text-sm text-gold">ProAm Elite Tournament</div>
-              <div className="text-xs text-muted mt-1">Próximo torneo</div>
-              <div className="font-bold text-sm my-1">30 MAY – 1 JUN</div>
-              <div className="text-xs text-muted mb-3">$500 prize pool</div>
-              <a href="/torneos" className="inline-block bg-[#2A1F45] text-white font-bold text-[11px] uppercase tracking-wide px-4 py-2.5 rounded-md border border-[#3A2D5C]">
-                Más información
-              </a>
+              {featuredTournament ? (
+                <>
+                  <div className="font-black uppercase text-sm text-gold">{featuredTournament.name}</div>
+                  <div className="text-xs text-muted mt-1">
+                    {featuredTournament.status === "ONGOING" ? "Torneo en curso" : "Próximo torneo"}
+                  </div>
+                  <div className="font-bold text-sm my-1 uppercase">
+                    {new Date(featuredTournament.startDate).toLocaleDateString("es-ES", { day: "2-digit", month: "short" })}
+                    {featuredTournament.endDate
+                      ? ` – ${new Date(featuredTournament.endDate).toLocaleDateString("es-ES", { day: "2-digit", month: "short" })}`
+                      : ""}
+                  </div>
+                  {featuredTournament.prizePool && (
+                    <div className="text-xs text-muted mb-3">{featuredTournament.prizePool}</div>
+                  )}
+                  <a
+                    href={`/torneos/${featuredTournament.id}`}
+                    className="inline-block bg-[#2A1F45] text-white font-bold text-[11px] uppercase tracking-wide px-4 py-2.5 rounded-md border border-[#3A2D5C]"
+                  >
+                    Más información
+                  </a>
+                </>
+              ) : (
+                <>
+                  <div className="font-black uppercase text-sm text-gold">Torneos</div>
+                  <div className="text-xs text-muted mt-1 mb-3">
+                    No hay ningún torneo programado ahora mismo. Vuelve pronto.
+                  </div>
+                  <a
+                    href="/torneos"
+                    className="inline-block bg-[#2A1F45] text-white font-bold text-[11px] uppercase tracking-wide px-4 py-2.5 rounded-md border border-[#3A2D5C]"
+                  >
+                    Ver torneos
+                  </a>
+                </>
+              )}
             </div>
 
             <div className="bg-gradient-to-br from-[#1C1440] to-[#0A0A0B] border border-[#2A1F45] rounded-xl p-5">

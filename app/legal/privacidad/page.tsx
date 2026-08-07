@@ -22,18 +22,13 @@ export default function PrivacyPage() {
             </div>
           </div>
 
-          <div className="bg-surface border border-gold/30 rounded-xl p-4 text-xs text-muted">
-            ⚠️ Documento base pendiente de revisión legal. Antes de aceptar inscripciones reales, revísalo
-            con un profesional y completa los campos marcados entre corchetes.
-          </div>
-
           <div className="bg-surface border border-border rounded-xl p-6 space-y-5 text-sm text-[#D5D4D0] leading-relaxed">
             <section>
               <h2 className="font-display uppercase text-lg mb-2">1. Responsable del tratamiento</h2>
               <p>
                 El responsable del tratamiento de los datos recogidos en esta web es
-                <strong> [NOMBRE O RAZÓN SOCIAL]</strong>, con domicilio en <strong>[DIRECCIÓN]</strong> y
-                correo de contacto <strong>[EMAIL DE CONTACTO]</strong>.
+                <strong> Adriano Severini</strong>, con domicilio en <strong>calle Juan Bravo 21</strong> y
+                correo de contacto <strong>pael2027@gmail.com</strong>.
               </p>
             </section>
 
@@ -79,7 +74,7 @@ export default function PrivacyPage() {
               <h2 className="font-display uppercase text-lg mb-2">6. Tus derechos</h2>
               <p>
                 Puedes solicitar acceso, rectificación, supresión, oposición, limitación y portabilidad de
-                tus datos escribiendo a <strong>[EMAIL DE CONTACTO]</strong>. También puedes presentar una
+                tus datos escribiendo a <strong>pael2027@gmail.com</strong>. También puedes presentar una
                 reclamación ante la autoridad de control competente.
               </p>
             </section>

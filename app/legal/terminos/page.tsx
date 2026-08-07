@@ -22,17 +22,13 @@ export default function TermsPage() {
             </div>
           </div>
 
-          <div className="bg-surface border border-gold/30 rounded-xl p-4 text-xs text-muted">
-            ⚠️ Documento base pendiente de revisión legal. Antes de aceptar inscripciones reales, revísalo
-            con un profesional y completa los campos marcados entre corchetes.
-          </div>
-
           <div className="bg-surface border border-border rounded-xl p-6 space-y-5 text-sm text-[#D5D4D0] leading-relaxed">
             <section>
               <h2 className="font-display uppercase text-lg mb-2">1. Objeto</h2>
               <p>
                 Estos términos regulan la inscripción y participación en las competiciones organizadas por
-                ProAm Elite League (en adelante, «la Liga»), organizada por <strong>[NOMBRE O RAZÓN SOCIAL]</strong>.
+                ProAm Elite League (en adelante, «la Liga»), organizada por <strong>Adriano Severini</strong>,
+                con domicilio en calle Juan Bravo 21 y correo de contacto <strong>pael2027@gmail.com</strong>.
               </p>
             </section>
 
@@ -51,10 +47,14 @@ export default function TermsPage() {
             <section>
               <h2 className="font-display uppercase text-lg mb-2">3. Devoluciones</h2>
               <p>
-                Si la organización rechaza tu inscripción o cancela la competición antes de su inicio, se
-                devolverá el importe íntegro. Una vez comenzada la competición, no se admiten devoluciones
-                por abandono voluntario o descalificación del equipo, salvo <strong>[EXCEPCIONES QUE
-                DECIDAS APLICAR]</strong>.
+                Se devolverá el importe íntegro en dos supuestos: si la organización rechaza tu inscripción,
+                o si la organización cancela o suspende definitivamente la competición (tanto antes de
+                empezar como una vez iniciada).
+              </p>
+              <p className="mt-2">
+                Fuera de esos casos no se admiten devoluciones. En particular, no se devuelve el importe si
+                el equipo abandona voluntariamente la competición, si no se presenta a los partidos, o si es
+                descalificado por incumplir estos términos.
               </p>
             </section>
 
