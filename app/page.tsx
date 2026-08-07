@@ -357,7 +357,12 @@ export default async function Home() {
                 Síguenos en <span className="text-[#7B6FE0]">Discord</span>
               </div>
               <div className="text-xs text-muted mt-1 mb-3">Únete a nuestra comunidad para estar al día de todo.</div>
-              <a href="https://discord.gg/tu-servidor" className="inline-block bg-[#5865F2] text-white font-bold text-[11px] uppercase tracking-wide px-4 py-2.5 rounded-md">
+              <a
+                href="https://discord.gg/TJhhDhDXK"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-[#5865F2] text-white font-bold text-[11px] uppercase tracking-wide px-4 py-2.5 rounded-md"
+              >
                 Unirse al Discord
               </a>
             </div>
