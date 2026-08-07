@@ -172,36 +172,38 @@ export default async function TournamentDetailPage({
             {teamStats.length === 0 ? (
               <p className="text-xs text-muted py-4">Todavía no hay partidos finalizados en este torneo.</p>
             ) : (
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="text-muted text-left">
-                    <th className="font-normal pb-2">Equipo</th>
-                    <th className="font-normal pb-2 text-right">V</th>
-                    <th className="font-normal pb-2 text-right">D</th>
-                    <th className="font-normal pb-2 text-right">PF</th>
-                    <th className="font-normal pb-2 text-right">PC</th>
-                    <th className="font-normal pb-2 text-right">Dif</th>
-                  </tr>
-                </thead>
-                <tbody className="font-mono">
-                  {teamStats.map((t) => (
-                    <tr key={t.teamId} className="border-t border-border">
-                      <td className="py-2 font-sans font-semibold">
-                        <a href={`/equipos/${t.teamId}`} className="flex items-center gap-1.5 hover:text-gold transition-colors">
-                          <TeamBadge letter={t.teamName[0]} color={t.primaryColor ?? "#C9A227"} /> {t.teamName}
-                        </a>
-                      </td>
-                      <td className="py-2 text-right">{t.wins}</td>
-                      <td className="py-2 text-right">{t.losses}</td>
-                      <td className="py-2 text-right">{t.pointsFor}</td>
-                      <td className="py-2 text-right">{t.pointsAgainst}</td>
-                      <td className={`py-2 text-right ${t.pointsFor - t.pointsAgainst >= 0 ? "text-win" : "text-loss"}`}>
-                        {t.pointsFor - t.pointsAgainst >= 0 ? "+" : ""}{t.pointsFor - t.pointsAgainst}
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-muted text-left">
+                      <th className="font-normal pb-2">Equipo</th>
+                      <th className="font-normal pb-2 text-right">V</th>
+                      <th className="font-normal pb-2 text-right">D</th>
+                      <th className="font-normal pb-2 text-right">PF</th>
+                      <th className="font-normal pb-2 text-right">PC</th>
+                      <th className="font-normal pb-2 text-right">Dif</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="font-mono">
+                    {teamStats.map((t) => (
+                      <tr key={t.teamId} className="border-t border-border">
+                        <td className="py-2 font-sans font-semibold">
+                          <a href={`/equipos/${t.teamId}`} className="flex items-center gap-1.5 hover:text-gold transition-colors">
+                            <TeamBadge letter={t.teamName[0]} color={t.primaryColor ?? "#C9A227"} /> {t.teamName}
+                          </a>
+                        </td>
+                        <td className="py-2 text-right">{t.wins}</td>
+                        <td className="py-2 text-right">{t.losses}</td>
+                        <td className="py-2 text-right">{t.pointsFor}</td>
+                        <td className="py-2 text-right">{t.pointsAgainst}</td>
+                        <td className={`py-2 text-right ${t.pointsFor - t.pointsAgainst >= 0 ? "text-win" : "text-loss"}`}>
+                          {t.pointsFor - t.pointsAgainst >= 0 ? "+" : ""}{t.pointsFor - t.pointsAgainst}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
 

@@ -54,7 +54,7 @@ export default async function AdminMvpPage() {
     <div className="min-h-screen flex">
       <AdminSidebar active="/admin/mvp" />
       <div className="flex-1 flex flex-col min-w-0">
-        <main className="p-6 max-w-[1200px] w-full">
+        <main className="p-4 sm:p-6 max-w-[1200px] w-full mt-[57px] md:mt-0">
           <h1 className="font-display uppercase text-3xl mb-1">Votación MVP</h1>
           <p className="text-muted text-sm mb-6">
             Recuento de votos por competición. Al cerrar la votación se otorga el premio de MVP.

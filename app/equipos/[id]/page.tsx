@@ -95,32 +95,34 @@ export default async function TeamDetailPage({ params }: { params: { id: string 
               {roster.length === 0 ? (
                 <p className="text-xs text-muted py-4">Todavía no hay jugadores asignados a este equipo esta temporada.</p>
               ) : (
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="text-muted text-left">
-                      <th className="font-normal pb-2">Jugador</th>
-                      <th className="font-normal pb-2">Pos</th>
-                      <th className="font-normal pb-2 text-right">PPG</th>
-                      <th className="font-normal pb-2 text-right">RPG</th>
-                      <th className="font-normal pb-2 text-right">APG</th>
-                    </tr>
-                  </thead>
-                  <tbody className="font-mono">
-                    {roster.map((s) => (
-                      <tr key={s.id} className="border-t border-border">
-                        <td className="py-2 font-sans font-semibold">
-                          <a href={`/jugadores/${s.player.id}`} className="hover:text-gold transition-colors">
-                            {s.player.gamertag}
-                          </a>
-                        </td>
-                        <td className="py-2 text-muted">{s.player.position ?? "—"}</td>
-                        <td className="py-2 text-right text-gold">{s.ppg}</td>
-                        <td className="py-2 text-right">{s.rpg}</td>
-                        <td className="py-2 text-right">{s.apg}</td>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-muted text-left">
+                        <th className="font-normal pb-2">Jugador</th>
+                        <th className="font-normal pb-2">Pos</th>
+                        <th className="font-normal pb-2 text-right">PPG</th>
+                        <th className="font-normal pb-2 text-right">RPG</th>
+                        <th className="font-normal pb-2 text-right">APG</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="font-mono">
+                      {roster.map((s) => (
+                        <tr key={s.id} className="border-t border-border">
+                          <td className="py-2 font-sans font-semibold">
+                            <a href={`/jugadores/${s.player.id}`} className="hover:text-gold transition-colors">
+                              {s.player.gamertag}
+                            </a>
+                          </td>
+                          <td className="py-2 text-muted">{s.player.position ?? "—"}</td>
+                          <td className="py-2 text-right text-gold">{s.ppg}</td>
+                          <td className="py-2 text-right">{s.rpg}</td>
+                          <td className="py-2 text-right">{s.apg}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
 
@@ -159,30 +161,32 @@ export default async function TeamDetailPage({ params }: { params: { id: string 
             {seasonHistory.length === 0 ? (
               <p className="text-xs text-muted py-4">Este equipo todavía no tiene historial de temporadas.</p>
             ) : (
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="text-muted text-left">
-                    <th className="font-normal pb-2">Temporada</th>
-                    <th className="font-normal pb-2 text-right">V</th>
-                    <th className="font-normal pb-2 text-right">D</th>
-                    <th className="font-normal pb-2 text-right">Dif</th>
-                    <th className="font-normal pb-2 text-right">Posición</th>
-                  </tr>
-                </thead>
-                <tbody className="font-mono">
-                  {seasonHistory.map((r) => (
-                    <tr key={r.id} className="border-t border-border">
-                      <td className="py-2 font-sans font-semibold">{r.season.name}</td>
-                      <td className="py-2 text-right">{r.wins}</td>
-                      <td className="py-2 text-right">{r.losses}</td>
-                      <td className={`py-2 text-right ${r.pointsDiff >= 0 ? "text-win" : "text-loss"}`}>
-                        {r.pointsDiff >= 0 ? "+" : ""}{r.pointsDiff}
-                      </td>
-                      <td className="py-2 text-right text-muted">{r.standing ?? "—"}</td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-muted text-left">
+                      <th className="font-normal pb-2">Temporada</th>
+                      <th className="font-normal pb-2 text-right">V</th>
+                      <th className="font-normal pb-2 text-right">D</th>
+                      <th className="font-normal pb-2 text-right">Dif</th>
+                      <th className="font-normal pb-2 text-right">Posición</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="font-mono">
+                    {seasonHistory.map((r) => (
+                      <tr key={r.id} className="border-t border-border">
+                        <td className="py-2 font-sans font-semibold">{r.season.name}</td>
+                        <td className="py-2 text-right">{r.wins}</td>
+                        <td className="py-2 text-right">{r.losses}</td>
+                        <td className={`py-2 text-right ${r.pointsDiff >= 0 ? "text-win" : "text-loss"}`}>
+                          {r.pointsDiff >= 0 ? "+" : ""}{r.pointsDiff}
+                        </td>
+                        <td className="py-2 text-right text-muted">{r.standing ?? "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </main>

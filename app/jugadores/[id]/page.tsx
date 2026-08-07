@@ -157,34 +157,36 @@ export default async function PlayerProfilePage({ params }: { params: { id: stri
             {player.seasonStats.length === 0 ? (
               <p className="text-xs text-muted py-4">Este jugador todavía no tiene historial de temporadas.</p>
             ) : (
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="text-muted text-left">
-                    <th className="font-normal pb-2">Temporada</th>
-                    <th className="font-normal pb-2">Equipo</th>
-                    <th className="font-normal pb-2 text-right">PJ</th>
-                    <th className="font-normal pb-2 text-right">PPG</th>
-                    <th className="font-normal pb-2 text-right">RPG</th>
-                    <th className="font-normal pb-2 text-right">APG</th>
-                    <th className="font-normal pb-2 text-right">SPG</th>
-                    <th className="font-normal pb-2 text-right">BPG</th>
-                  </tr>
-                </thead>
-                <tbody className="font-mono">
-                  {player.seasonStats.map((s) => (
-                    <tr key={s.id} className="border-t border-border">
-                      <td className="py-2 font-sans font-semibold">{s.season.name}</td>
-                      <td className="py-2 font-sans text-muted">{s.team?.name ?? "Sin equipo"}</td>
-                      <td className="py-2 text-right">{s.gamesPlayed}</td>
-                      <td className="py-2 text-right text-gold">{s.ppg}</td>
-                      <td className="py-2 text-right">{s.rpg}</td>
-                      <td className="py-2 text-right">{s.apg}</td>
-                      <td className="py-2 text-right">{s.spg}</td>
-                      <td className="py-2 text-right">{s.bpg}</td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-muted text-left">
+                      <th className="font-normal pb-2">Temporada</th>
+                      <th className="font-normal pb-2">Equipo</th>
+                      <th className="font-normal pb-2 text-right">PJ</th>
+                      <th className="font-normal pb-2 text-right">PPG</th>
+                      <th className="font-normal pb-2 text-right">RPG</th>
+                      <th className="font-normal pb-2 text-right">APG</th>
+                      <th className="font-normal pb-2 text-right">SPG</th>
+                      <th className="font-normal pb-2 text-right">BPG</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="font-mono">
+                    {player.seasonStats.map((s) => (
+                      <tr key={s.id} className="border-t border-border">
+                        <td className="py-2 font-sans font-semibold">{s.season.name}</td>
+                        <td className="py-2 font-sans text-muted">{s.team?.name ?? "Sin equipo"}</td>
+                        <td className="py-2 text-right">{s.gamesPlayed}</td>
+                        <td className="py-2 text-right text-gold">{s.ppg}</td>
+                        <td className="py-2 text-right">{s.rpg}</td>
+                        <td className="py-2 text-right">{s.apg}</td>
+                        <td className="py-2 text-right">{s.spg}</td>
+                        <td className="py-2 text-right">{s.bpg}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
 

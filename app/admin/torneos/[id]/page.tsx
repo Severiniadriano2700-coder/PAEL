@@ -34,7 +34,7 @@ export default async function AdminTournamentDetailPage({ params }: { params: { 
     <div className="min-h-screen flex">
       <AdminSidebar active="/admin/torneos" />
       <div className="flex-1 flex flex-col min-w-0">
-        <main className="p-6 max-w-[1200px] w-full">
+        <main className="p-4 sm:p-6 max-w-[1200px] w-full mt-[57px] md:mt-0">
           <a href="/admin/torneos" className="text-xs text-muted hover:text-gold transition-colors">
             ← Volver a torneos
           </a>

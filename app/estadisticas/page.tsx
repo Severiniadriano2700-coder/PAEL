@@ -65,32 +65,34 @@ export default async function StatsPage({ searchParams }: { searchParams: { cat?
                 {stats.length === 0 ? (
                   <p className="text-xs text-muted py-8 text-center">Todavía no hay estadísticas registradas esta temporada.</p>
                 ) : (
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="text-muted text-left text-xs">
-                        <th className="font-normal pb-3">#</th>
-                        <th className="font-normal pb-3">Jugador</th>
-                        <th className="font-normal pb-3">Equipo</th>
-                        <th className="font-normal pb-3 text-right">PJ</th>
-                        <th className="font-normal pb-3 text-right">{CATEGORIES.find((c) => c.key === activeCat)?.label}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="font-mono">
-                      {stats.map((s, i) => (
-                        <tr key={s.id} className="border-t border-border">
-                          <td className="py-2.5 text-muted">{i + 1}</td>
-                          <td className="py-2.5 font-sans font-semibold">
-                            <a href={`/jugadores/${s.player.id}`} className="hover:text-gold transition-colors">
-                              {s.player.gamertag}
-                            </a>
-                          </td>
-                          <td className="py-2.5 font-sans text-muted">{s.team?.name ?? "Sin equipo"}</td>
-                          <td className="py-2.5 text-right">{s.gamesPlayed}</td>
-                          <td className="py-2.5 text-right text-gold font-bold">{s[activeCat]}</td>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-muted text-left text-xs">
+                          <th className="font-normal pb-3">#</th>
+                          <th className="font-normal pb-3">Jugador</th>
+                          <th className="font-normal pb-3">Equipo</th>
+                          <th className="font-normal pb-3 text-right">PJ</th>
+                          <th className="font-normal pb-3 text-right">{CATEGORIES.find((c) => c.key === activeCat)?.label}</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="font-mono">
+                        {stats.map((s, i) => (
+                          <tr key={s.id} className="border-t border-border">
+                            <td className="py-2.5 text-muted">{i + 1}</td>
+                            <td className="py-2.5 font-sans font-semibold">
+                              <a href={`/jugadores/${s.player.id}`} className="hover:text-gold transition-colors">
+                                {s.player.gamertag}
+                              </a>
+                            </td>
+                            <td className="py-2.5 font-sans text-muted">{s.team?.name ?? "Sin equipo"}</td>
+                            <td className="py-2.5 text-right">{s.gamesPlayed}</td>
+                            <td className="py-2.5 text-right text-gold font-bold">{s[activeCat]}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
             </>

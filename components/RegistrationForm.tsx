@@ -15,11 +15,13 @@ export default function RegistrationForm() {
   const [players, setPlayers] = useState<string[]>(["", "", "", "", ""]);
   const [status, setStatus] = useState<"idle" | "paying" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const price = PRICES[competitionType];
   const validPlayers = players.map((p) => p.trim()).filter(Boolean);
   const rosterValid = validPlayers.length >= 5 && validPlayers.length <= 6;
-  const formValid = teamName.trim() && captainName.trim() && captainContact.trim() && rosterValid;
+  const formValid =
+    teamName.trim() && captainName.trim() && captainContact.trim() && rosterValid && acceptedTerms;
 
   function updatePlayer(index: number, value: string) {
     setPlayers((prev) => prev.map((p, i) => (i === index ? value : p)));
@@ -152,9 +154,26 @@ export default function RegistrationForm() {
         <span style={{ fontSize: 22, fontWeight: 900, color: "#C9A227" }}>{price.toFixed(2)}€</span>
       </div>
 
+      <label style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 16, cursor: "pointer" }}>
+        <input
+          type="checkbox"
+          checked={acceptedTerms}
+          onChange={(e) => setAcceptedTerms(e.target.checked)}
+          style={{ marginTop: 3, accentColor: "#C9A227", width: 15, height: 15, flexShrink: 0 }}
+        />
+        <span style={{ fontSize: 12, color: "#9A999F", lineHeight: 1.5 }}>
+          He leído y acepto los{" "}
+          <a href="/legal/terminos" target="_blank" style={{ color: "#C9A227" }}>términos y condiciones</a>
+          {" "}y la{" "}
+          <a href="/legal/privacidad" target="_blank" style={{ color: "#C9A227" }}>política de privacidad</a>.
+        </span>
+      </label>
+
       {!formValid ? (
         <p style={{ fontSize: 12, color: "#9A999F", textAlign: "center" }}>
-          Completa todos los campos para poder pagar.
+          {!acceptedTerms && teamName.trim() && captainName.trim() && captainContact.trim() && rosterValid
+            ? "Acepta los términos y condiciones para poder pagar."
+            : "Completa todos los campos para poder pagar."}
         </p>
       ) : (
         <PayPalScriptProvider
